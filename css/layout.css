@@ -1,0 +1,63 @@
+/* CSS Document */
+* {
+ margin: 0;
+ padding: 0;
+ 
+}
+body {
+ color: #666;
+ font-family: sans-serif;
+ padding-top: 10px;
+}
+h1 {
+ text-align: center;
+}
+
+#box {
+ width: 300px;
+ margin:0 auto;
+ padding: 10px;
+ border: 1px solid #666;
+ position: relative;
+}
+
+#timer_minutes, #timer_seconds {
+ width: 90px;
+ height: 70px;
+ font-size: 68px;  
+ text-align: center;
+}
+
+#timer_minutes {
+ margin-left: 40px;
+}
+
+#timer_top span.colon {
+ font-size: 68px; 
+ line-height: 60px;
+}
+          
+#timer_top h4 {
+ padding-left: 40px;
+}
+
+span.buttons {
+ display: block;
+ text-align:right;
+ 
+}  
+#timer_top span.buttons {
+  padding-right:52px;
+}  
+
+#button_start,#button_interruption {
+}
+
+#button_interruption {
+ right: 150px;
+}
+
+#task_list  {
+ width: 100%;
+}   
+/*css end*/
