@@ -46,13 +46,19 @@ Timer.prototype = {
     this.state = "running";
     this.update();
   },
-
+  
+  display: function (){
+   $('#timer_minutes').val( TimeFormatter.formatSecs(this.getTimeLeft()) );
+   $('#timer_seconds').val( TimeFormatter.formatMins(this.getTimeLeft()) );
+  },
+  
   update: function() {
     if (this.state != "running") {
       return;
     }
     
     //Timer.display(Timer.el, Timer.getTimeLeft());
+    this.display();
     console.log('Update timer time.');
     var totalSecs = parseInt(this.getTimeLeft() / Times.sec);
     if (totalSecs <= 0) {
@@ -81,6 +87,27 @@ Timer.prototype = {
     var now = this.getTime();
     var left = end - now;
     return left;
+  }
+};
+
+
+
+TimeFormatter = { 
+  
+  formatSecs:function(time) {
+    var time_s = parseInt(time / Times.sec % 60);
+    if(time_s < 10) {
+      time_s = "0" + time_s;
+    }
+    return time_s;
+  },
+  
+  formatMins:function(time) {
+    var time_m = parseInt((time / Times.sec) / 60);	
+    if(time_m <= 0){
+      time_m = "00";
+    }
+    return time_m;
   }
 };
 
