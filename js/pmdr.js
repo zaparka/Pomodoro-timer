@@ -4,14 +4,14 @@
 // used libraries: jquery.js
 
 Times = {
-   sec: 1000,
-   min: 1000*60,
-   hour: 1000*60*60
- };
+  sec: 1000,
+  min: 1000*60,
+  hour: 1000*60*60
+};
 
 function PomodoroTimer() {
   this.state = 'stopped';
-  this.timer = new Timer(Times.sec * 10, this.update_time);
+  this.timer = new Timer(this.update_time);
 };
 
 PomodoroTimer.prototype = {
@@ -20,7 +20,7 @@ PomodoroTimer.prototype = {
 
   start: function() {
     this.state = 'running';
-    this.timer.start();
+    this.timer.start(Times.sec * 10);
   },
 
   stop: function() {
@@ -33,17 +33,17 @@ PomodoroTimer.prototype = {
 
 };
 
-function Timer(end, callback) {
-  this.callback = callback;
-  this.setEndTime(end);    
+function Timer(callback) {
+  this.callback = callback; 
 };
 
 Timer.prototype = {
   endTime: 0,
 
   // end is in seconds
-  start: function(end, callback) {
+  start: function(end) {
     this.state = "running";
+    this.setEndTime(end);
     this.update();
   },
   
@@ -57,15 +57,13 @@ Timer.prototype = {
       return;
     }
     
-    //Timer.display(Timer.el, Timer.getTimeLeft());
     this.display();
-    console.log('Update timer time.');
     var totalSecs = parseInt(this.getTimeLeft() / Times.sec);
     if (totalSecs <= 0) {
-      this.state = "stoped";
+      this.state = "stopped";
       setTimeout(this.callback, Times.sec);
     } else {
-      setTimeout(function(thisObj) { thisObj.update(); }, 1000, this);
+      setTimeout(function(thisObj) { thisObj.update(); }, 100, this);
     }
   },
 
@@ -90,10 +88,7 @@ Timer.prototype = {
   }
 };
 
-
-
 TimeFormatter = { 
-  
   formatSecs:function(time) {
     var time_s = parseInt(time / Times.sec % 60);
     if(time_s < 10) {
