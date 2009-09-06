@@ -15,6 +15,15 @@ TaskManager.prototype = {
       name = prompt('Task name','Enter task nane');     
     }  
     this.tasks.push(new Task(name));
+    this.updateHTMLSelect();
+  },
+
+  // private
+  updateHTMLSelect: function() {
+    jQuery.each(this.tasks, function(i, task) {
+       console.log(task.name);
+      //$("#task_list").addChild(new InputTag('xxx'));
+    });
   }
 
 };
