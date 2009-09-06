@@ -23,12 +23,23 @@ TaskManager.prototype = {
     this.updateHTMLSelect();
   },
   
+  updateTask: function(i) {
+    this.tasks[i].name = prompt('Task name',this.tasks[i].name);
+    this.updateHTMLSelect();
+  },
+  
   deleteSelectedTask: function(select) {
-    if (select.selectedIndex == undefined) {
+    if (select[0].selectedIndex == undefined) {
       return;
-    }
-    
-    this.deleteTask(select.selectedIndex);
+    }    
+    this.deleteTask(select[0].selectedIndex);
+  },
+ 
+  udpateSelectedTask: function(select) {
+    if (select[0].selectedIndex == undefined) {
+      return;
+    }    
+    this.updateTask(select[0].selectedIndex);
   },
 
   // private
@@ -162,4 +173,5 @@ $(document).ready(function () {
   $('#button_interruption').bind('click',function(){ pomodoroTimer.stop(); });
   $('#button_add').bind('click', function(){ taskManager.addTask(); });
   $('#button_delete').bind('click',function() { taskManager.deleteSelectedTask($('#task_list')); });
+  $('#button_edit').bind('click',function() { taskManager.udpateSelectedTask($('#task_list')); });
 });//document ready
