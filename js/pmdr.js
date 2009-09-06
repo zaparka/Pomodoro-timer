@@ -3,6 +3,29 @@
 // Date: 3.9.2009
 // used libraries: jquery.js
 
+function TaskManager() {
+  this.tasks = new Array();
+};
+
+TaskManager.prototype = {
+  tasks: null,
+  
+  addTask: function(name) {
+    this.tasks.push(new Task(name));
+  }
+
+};
+
+function Task(name) {
+  this.name = name;
+};
+
+Task.prototype = {
+  name: '',
+  number_of_pomodoro: 0,
+  number_of_interuptions: 0
+};
+
 Times = {
   sec: 1000,
   min: 1000*60,
@@ -109,6 +132,8 @@ TimeFormatter = {
   
 $(document).ready(function () {
   var pomodoroTimer = new PomodoroTimer();
+  var taskManager = new TaskManager();
   $('#button_start').bind('click',function(){ pomodoroTimer.start(); });
   $('#button_interruption').bind('click',function(){ pomodoroTimer.stop(); });
+  $('#button_add').bind('click', function(){ taskManager.addTask('Empty'); });
 });//document ready
