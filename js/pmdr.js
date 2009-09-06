@@ -48,8 +48,8 @@ Timer.prototype = {
   },
   
   display: function (){
-   $('#timer_minutes').val( TimeFormatter.formatSecs(this.getTimeLeft()) );
-   $('#timer_seconds').val( TimeFormatter.formatMins(this.getTimeLeft()) );
+   $('#timer_seconds').val( TimeFormatter.formatSecs(this.getTimeLeft()) );
+   $('#timer_minutes').val( TimeFormatter.formatMins(this.getTimeLeft()) );
   },
   
   update: function() {
