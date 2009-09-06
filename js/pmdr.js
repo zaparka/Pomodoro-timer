@@ -11,6 +11,9 @@ TaskManager.prototype = {
   tasks: null,
   
   addTask: function(name) {
+    if(name == '' || name == null ){
+      name = prompt('Task name','Enter task nane');     
+    }  
     this.tasks.push(new Task(name));
   }
 
@@ -135,5 +138,5 @@ $(document).ready(function () {
   var taskManager = new TaskManager();
   $('#button_start').bind('click',function(){ pomodoroTimer.start(); });
   $('#button_interruption').bind('click',function(){ pomodoroTimer.stop(); });
-  $('#button_add').bind('click', function(){ taskManager.addTask('Empty'); });
+  $('#button_add').bind('click', function(){ taskManager.addTask(); });
 });//document ready
