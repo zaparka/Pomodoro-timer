@@ -17,6 +17,19 @@ TaskManager.prototype = {
     this.tasks.push(new Task(name));
     this.updateHTMLSelect();
   },
+  
+  deleteTask: function(i) {
+    this.tasks.splice(i,1);
+    this.updateHTMLSelect();
+  },
+  
+  deleteSelectedTask: function(select) {
+    if (select.selectedIndex == undefined) {
+      return;
+    }
+    
+    this.deleteTask(select.selectedIndex);
+  },
 
   // private
   updateHTMLSelect: function() {
@@ -148,4 +161,5 @@ $(document).ready(function () {
   $('#button_start').bind('click',function(){ pomodoroTimer.start(); });
   $('#button_interruption').bind('click',function(){ pomodoroTimer.stop(); });
   $('#button_add').bind('click', function(){ taskManager.addTask(); });
+  $('#button_delete').bind('click',function() { taskManager.deleteSelectedTask($('#task_list')); });
 });//document ready
