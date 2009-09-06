@@ -12,7 +12,7 @@ TaskManager.prototype = {
   
   addTask: function(name) {
     if(name == '' || name == null ){
-      name = prompt('Task name','Enter task nane');     
+      name = prompt('Task name','Enter task nane');
     }  
     this.tasks.push(new Task(name));
     this.updateHTMLSelect();
@@ -20,9 +20,9 @@ TaskManager.prototype = {
 
   // private
   updateHTMLSelect: function() {
+    $("#task_list").empty();   
     jQuery.each(this.tasks, function(i, task) {
-       console.log(task.name);
-      //$("#task_list").addChild(new InputTag('xxx'));
+      $("#task_list").prepend('<option>'+task.name+'</option>');
     });
   }
 
