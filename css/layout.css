@@ -18,6 +18,19 @@ h1 {
  margin:0 auto;
  padding: 10px;
  border: 1px solid #666;
+ box-shadow: 10px 10px 5px #888;
+ -o-box-shadow: 10px 10px 5px #888;
+ -khtml-box-shadow: 10px 10px 5px #888;
+ -moz-box-shadow: 10px 10px 5px #888;
+ -webkit-box-shadow: 10px 10px 5px #888;
+ border-radius: 5px;
+ -o-border-radius: 5px;
+ -icab-border-radius: 5px;
+ -khtml-border-radius: 5px;
+ -moz-border-radius: 5px;
+ -webkit-border-radius: 10px;
+
+ padding: 5px 5px 5px 15px; 
  position: relative;
 }
 
