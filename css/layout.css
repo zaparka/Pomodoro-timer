@@ -23,11 +23,11 @@ h1 {
  -khtml-box-shadow: 10px 10px 5px #888;
  -moz-box-shadow: 10px 10px 5px #888;
  -webkit-box-shadow: 10px 10px 5px #888;
- border-radius: 5px;
- -o-border-radius: 5px;
- -icab-border-radius: 5px;
- -khtml-border-radius: 5px;
- -moz-border-radius: 5px;
+ border-radius: 10px;
+ -o-border-radius: 10px;
+ -icab-border-radius: 10px;
+ -khtml-border-radius: 10px;
+ -moz-border-radius: 10px;
  -webkit-border-radius: 10px;
 
  padding: 5px 5px 5px 15px; 
