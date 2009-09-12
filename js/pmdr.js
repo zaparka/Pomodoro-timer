@@ -161,9 +161,9 @@ TaskManager.prototype = {
 
   // private
   updateHTMLSelect: function() {
-    $("#task_list").empty();   
+    $("#task_list").empty();     
     jQuery.each(this.tasks.list(), function(i, task) {
-      $("#task_list").prepend('<option>'+task.name+'</option>');
+      $("#task_list").append('<option>'+task.name+'</option>');
     });
   }
 
