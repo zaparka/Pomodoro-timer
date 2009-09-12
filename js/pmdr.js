@@ -3,12 +3,48 @@
 // Date: 3.9.2009
 // used libraries: jquery.js
 
+function HtmlStorage() {
+  if (window.openDatabase){
+    this.database = openDatabase("PomodoroTimer", "1.0", "HTML5 Database for PomodoroTimer", 200000);
+    if (!this.database)
+      alert("Failed to open the database on disk.");
+  } else
+    alert("Couldn't open the database.  Please try with a WebKit nightly with this feature enabled");
+}
+
+HtmlStorage.prototype = {
+  database: null,
+  
+  init: function() {
+    this.database.transaction(function(request) {
+      request.executeSql("SELECT COUNT(*) FROM PomodoroTimer", [], function(result) {
+        loadNotes();
+      },
+      
+      function(tx, error) {
+        request.executeSql("CREATE TABLE PomodoroTimer (id INT, name TEXT, pomodoro INT, interruption INT)", [],
+          function(result) { 
+            loadNotes(); 
+          });
+      });
+    });
+  },
+  insert: function(task) {
+    db.transaction(function (request){
+      request.executeSql("INSERT INTO PomodoroTimer (id, name, pomodoro, interruption) VALUES (?, ?, ?, ?)", [task.id, task.name, task.pomodoro, task.interruption]);
+    });  
+  }
+  
+};
+
 function TaskManager() {
   this.tasks = new Array();
+  this.storage = new HtmlStorage();
 };
 
 TaskManager.prototype = {
   tasks: null,
+  storage: null,
   
   addTask: function(name) {
     if(name == '' || name == null ){
@@ -16,6 +52,7 @@ TaskManager.prototype = {
     }  
     this.tasks.push(new Task(name));
     this.updateHTMLSelect();
+    //this.storage.insert(this);
   },
   
   deleteTask: function(i) {
