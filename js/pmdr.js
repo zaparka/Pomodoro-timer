@@ -192,7 +192,7 @@ Times = {
 function PomodoroTimer(task_manager) {
   this.state = 'stopped';
   this.task_manager = task_manager;
-  this.timer = new Timer(this.update_time);
+  this.timer = new Timer(this.stop, this);
 };
 
 PomodoroTimer.prototype = {
@@ -210,13 +210,14 @@ PomodoroTimer.prototype = {
     }
   },
 
-  stop: function() {
-    this.state = 'stopped';
-  },
-
-  update_time: function() {
-    console.log('Time out!');
-    $("#task_list").attr('disabled',false);
+  stop: function(thisObj) {
+    thisObj.state = 'stopped';
+     $("#task_list").attr('disabled',false);
+     var selected_task = thisObj.selected_task();     
+     var task = thisObj.task_manager.tasks.get(selected_task);
+     task.number_of_pomodoros += 1;
+     thisObj.task_manager.tasks.update(selected_task,task);
+     thisObj.task_manager.updateHTMLSelect();
   },
   
   selected_task: function() {
@@ -226,8 +227,9 @@ PomodoroTimer.prototype = {
 
 };
 
-function Timer(callback) {
+function Timer(callback, obj) {
   this.callback = callback; 
+  this.obj = obj;
 };
 
 Timer.prototype = {
@@ -254,7 +256,7 @@ Timer.prototype = {
     var totalSecs = parseInt(this.getTimeLeft() / Times.sec);
     if (totalSecs <= 0) {
       this.state = "stopped";
-      setTimeout(this.callback, Times.sec);
+      setTimeout(this.callback, Times.sec, this.obj);
     } else {
       setTimeout(function(thisObj) { thisObj.update(); }, 100, this);
     }
