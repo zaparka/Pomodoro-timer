@@ -37,31 +37,59 @@ HtmlStorage.prototype = {
   
 };
 
-function TaskManager() {
-  this.tasks = new Array();
-  this.storage = new HtmlStorage();
+function MemoryStorage(){
+ this.storage = new Array();
+}
+
+MemoryStorage.prototype = {
+  storage: null,
+  
+  insert: function(task) {
+    this.storage.push(task);
+  },
+  
+  update: function(id,task){
+    this.storage[id] = task;
+  },
+  
+  remove: function(id) {
+    this.storage.splice(id,1);
+  },
+  
+  list: function() {
+    return this.storage;
+  },
+  
+  get: function(id) {
+    return this.storage[id];
+  }
+  
+};
+
+function TaskManager(storage) {
+  this.tasks = storage;
 };
 
 TaskManager.prototype = {
   tasks: null,
-  storage: null,
   
   addTask: function(name) {
     if(name == '' || name == null ){
       name = prompt('Task name','Enter task nane');
     }  
-    this.tasks.push(new Task(name));
-    this.updateHTMLSelect();
-    //this.storage.insert(this);
-  },
-  
-  deleteTask: function(i) {
-    this.tasks.splice(i,1);
+    this.tasks.insert(new Task(name));
     this.updateHTMLSelect();
   },
   
-  updateTask: function(i) {
-    this.tasks[i].name = prompt('Task name',this.tasks[i].name);
+  deleteTask: function(id) {
+    this.tasks.remove(id);
+    this.updateHTMLSelect();
+  },
+  
+  updateTask: function(id) {
+    var task = this.tasks.get(id);
+    task.name = prompt('Task name', task.name); 
+    this.tasks.update(id, task);
     this.updateHTMLSelect();
   },
   
@@ -82,7 +110,7 @@ TaskManager.prototype = {
   // private
   updateHTMLSelect: function() {
     $("#task_list").empty();   
-    jQuery.each(this.tasks, function(i, task) {
+    jQuery.each(this.tasks.list(), function(i, task) {
       $("#task_list").prepend('<option>'+task.name+'</option>');
     });
   }
@@ -205,7 +233,8 @@ TimeFormatter = {
   
 $(document).ready(function () {
   var pomodoroTimer = new PomodoroTimer();
-  var taskManager = new TaskManager();
+  var mem = new MemoryStorage();
+  var taskManager = new TaskManager(mem  );
   $('#button_start').bind('click',function(){ pomodoroTimer.start(); });
   $('#button_interruption').bind('click',function(){ pomodoroTimer.stop(); });
   $('#button_add').bind('click', function(){ taskManager.addTask(); });
