@@ -185,18 +185,25 @@ Times = {
   hour: 1000*60*60
 };
 
-function PomodoroTimer() {
+function PomodoroTimer(task_manager) {
   this.state = 'stopped';
+  this.task_manager = task_manager;
   this.timer = new Timer(this.update_time);
 };
 
 PomodoroTimer.prototype = {
   state: 'stopped',
+  task_manager: null,
   timer: null,
 
   start: function() {
-    this.state = 'running';
-    this.timer.start(Times.sec * 10);
+    if(this.selected_task() == -1){
+      alert('You must select task');
+    } else {
+      $("#task_list").attr('disabled',true);
+      this.state = 'running';
+      this.timer.start(Times.sec * 10);
+    }
   },
 
   stop: function() {
@@ -205,6 +212,12 @@ PomodoroTimer.prototype = {
 
   update_time: function() {
     console.log('Time out!');
+    $("#task_list").attr('disabled',false);
+  },
+  
+  selected_task: function() {
+   var selected_task = $("#task_list")[0].selectedIndex; 
+   return selected_task;
   }
 
 };
@@ -283,9 +296,9 @@ TimeFormatter = {
 };
 
   
-$(document).ready(function () {
-  var pomodoroTimer = new PomodoroTimer();
+$(document).ready(function () {  
   var taskManager = new TaskManager(new MemoryStorage());
+  var pomodoroTimer = new PomodoroTimer(taskManager);
   taskManager.updateHTMLSelect();
   $('#button_start').bind('click',function(){ pomodoroTimer.start(); });
   $('#button_interruption').bind('click',function(){ pomodoroTimer.stop(); });
