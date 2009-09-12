@@ -163,7 +163,7 @@ TaskManager.prototype = {
   updateHTMLSelect: function() {
     $("#task_list").empty();     
     jQuery.each(this.tasks.list(), function(i, task) {
-      $("#task_list").append('<option>'+task.name+'</option>');
+      $("#task_list").append('<option>'+task.to_s()+'</option>');
     });
   }
 
@@ -176,7 +176,11 @@ function Task(name) {
 Task.prototype = {
   name: '',
   number_of_pomodoros: 0,
-  number_of_interuptions: 0
+  number_of_interuptions: 0,
+  
+  to_s: function() {
+    return this.name + ' (' + this.number_of_pomodoros + ') - ' + this.number_of_interuptions;
+  }
 };
 
 Times = {
