@@ -161,10 +161,12 @@ TaskManager.prototype = {
 
   // private
   updateHTMLSelect: function() {
+    var selected_task = $("#task_list")[0].selectedIndex;
     $("#task_list").empty();     
     jQuery.each(this.tasks.list(), function(i, task) {
       $("#task_list").append('<option>'+task.to_s()+'</option>');
     });
+    $("#task_list")[0].selectedIndex = selected_task;
   }
 
 };
@@ -218,6 +220,16 @@ PomodoroTimer.prototype = {
      task.number_of_pomodoros += 1;
      thisObj.task_manager.tasks.update(selected_task,task);
      thisObj.task_manager.updateHTMLSelect();
+  },
+  
+  interuption: function () {
+    if(this.state == 'running'){
+     var selected_task = this.selected_task();     
+     var task = this.task_manager.tasks.get(selected_task);
+     task.number_of_interuptions += 1;
+     this.task_manager.tasks.update(selected_task,task);
+     this.task_manager.updateHTMLSelect(); 
+    }
   },
   
   selected_task: function() {
@@ -307,7 +319,7 @@ $(document).ready(function () {
   var pomodoroTimer = new PomodoroTimer(taskManager);
   taskManager.updateHTMLSelect();
   $('#button_start').bind('click',function(){ pomodoroTimer.start(); });
-  $('#button_interruption').bind('click',function(){ pomodoroTimer.stop(); });
+  $('#button_interruption').bind('click',function(){ pomodoroTimer.interuption(); });
   $('#button_add').bind('click', function(){ taskManager.addTask(); });
   $('#button_delete').bind('click',function() { taskManager.deleteSelectedTask($('#task_list')); });
   $('#button_edit').bind('click',function() { taskManager.udpateSelectedTask($('#task_list')); });
