@@ -3,6 +3,43 @@
 // Date: 3.9.2009
 // used libraries: jquery.js
 
+
+function ServerStorage(){  
+}
+
+ServerStorage.prototype(){
+  
+  insert: function(task) {
+    this.ajax_call('POST', '/', task);
+  },
+  
+  update: function(id,task){
+    this.ajax_call('PUT', '/update/' + task.id, task);
+  },
+  
+  remove: function(id) {
+    this.ajax_call('DELETE', '/' + task.id, task); 
+  },
+  
+  list: function() {
+    return this.ajax_call('GET', '/'); 
+  },
+  
+  get: function(id) {
+    return this.ajax_call('GET', '/' + id); 
+  }
+  
+  ajax_call: function(type, url, data){
+    $.ajax({
+     type: type,
+     url: url,
+     dataType: "script",
+     data: data
+    });
+  },
+
+};	 
+
 function ClientSideStorage() {
   if (window.openDatabase){
     this.storage = openDatabase("pomodoro_timer", "1.0", "HTML5 Database for PomodoroTimer", 200000);
