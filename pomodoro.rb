@@ -41,3 +41,7 @@ put '/:id' do
   
   erb :task
 end
+
+delete '/:id' do
+  Task.get( params[:id] ).destroy
+end

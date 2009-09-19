@@ -69,4 +69,17 @@ class PomodoroTest < Test::Unit::TestCase
     assert_match /number_of_interuptions: 3/, last_response.body 
   end
   
+   def test_if_task_was_deleted_from_database 
+    Task.create(:name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5)
+    task = Task.create( :name => 'Updated name', :number_of_pomodoros => 2, :number_of_interuptions => 3 )
+      
+    delete '/' + task.id.to_s
+
+    assert last_response.ok?
+    assert_equal 1, Task.count
+    assert_match 'Name of the task', Task.last.name
+    assert_equal 1, Task.last.number_of_pomodoros
+    assert_equal 5, Task.last.number_of_interuptions
+  end
+  
 end
