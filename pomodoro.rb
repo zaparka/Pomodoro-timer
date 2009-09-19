@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'sinatra'
 require 'haml'
+require 'erb'
 #require 'sass'
 require 'dm-core'
 require 'dm-validations'
@@ -23,5 +24,11 @@ end
 
 get '/' do
   @tasks = Task.all
-  haml :index
+  erb :index
+end
+
+get '/:id' do
+  @tasks = Array.new
+  @tasks.push( Task.get( params[:id ] ) ) 
+  erb :index
 end

@@ -21,27 +21,40 @@ class PomodoroTest < Test::Unit::TestCase
     post '/', :name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5
     
     assert last_response.ok?
-    assert pre_count + 1, Task.count
+    assert_equal pre_count + 1, Task.count
   end
   
   def test_if_inserts_right_data_for_task  
     post '/', :name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5
     
     assert last_response.ok?
-    assert 'Name of the task',Task.last.name
-    assert 1,Task.last.number_of_pomodoros
-    assert 5,Task.last.number_of_interuptions 
+    assert_equal 'Name of the task',Task.last.name
+    assert_equal 1,Task.last.number_of_pomodoros
+    assert_equal 5,Task.last.number_of_interuptions 
   end
   
   def test_if_gets_right_number_of_tasks  
-    Task.create(:name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5)
+    task = Task.create(:name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5)
     
     get '/'
 
     assert last_response.ok?
+    assert_match /id: #{task.id}/, last_response.body
+    assert_match /name: 'Name of the task'/, last_response.body
+    assert_match /number_of_pomodoros: 1/, last_response.body
+    assert_match /number_of_interuptions: 5/, last_response.body 
+  end
+  
+  def test_if_gets_right_task 
+    task = Task.create(:name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5)
     
-    doc = Nokogiri::HTML(last_response.body)
-    assert_equal 1, doc.search("option").length    
+    get '/' + task.id.to_s
+
+    assert last_response.ok?
+    assert_match /id: #{task.id}/, last_response.body
+    assert_match /name: 'Name of the task'/, last_response.body
+    assert_match /number_of_pomodoros: 1/, last_response.body
+    assert_match /number_of_interuptions: 5/, last_response.body 
   end
   
   
