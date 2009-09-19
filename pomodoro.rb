@@ -18,5 +18,10 @@ DataMapper::setup(:default, {
 })
 
 post '/' do
-  Task.create(params) 
+  Task.create(params)   
+end
+
+get '/' do
+  @tasks = Task.all
+  haml :index
 end

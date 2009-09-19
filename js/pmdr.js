@@ -4,10 +4,10 @@
 // used libraries: jquery.js
 
 
-function ServerStorage(){  
+function ServerStorage(){
 }
 
-ServerStorage.prototype(){
+ServerStorage.prototype = {
   
   insert: function(task) {
     this.ajax_call('POST', '/', task);
@@ -27,7 +27,7 @@ ServerStorage.prototype(){
   
   get: function(id) {
     return this.ajax_call('GET', '/' + id); 
-  }
+  },
   
   ajax_call: function(type, url, data){
     $.ajax({

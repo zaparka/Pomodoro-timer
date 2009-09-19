@@ -33,4 +33,17 @@ class PomodoroTest < Test::Unit::TestCase
     assert 5,Task.last.number_of_interuptions 
   end
   
+  def test_if_gets_right_number_of_tasks  
+    Task.create(:name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5)
+    
+    get '/'
+
+    assert last_response.ok?
+    
+    doc = Nokogiri::HTML(last_response.body)
+    assert_equal 1, doc.search("option").length    
+  end
+  
+  
+  
 end
