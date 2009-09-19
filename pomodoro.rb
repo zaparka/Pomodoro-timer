@@ -32,3 +32,9 @@ get '/:id' do
   @tasks.push( Task.get( params[:id ] ) ) 
   erb :index
 end
+
+get '/update/:id' do
+  @tasks = Array.new
+  @tasks.push( Task.get( params[:id ] ) ) 
+  erb :index
+end
