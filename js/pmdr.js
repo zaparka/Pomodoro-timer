@@ -14,7 +14,7 @@ ServerStorage.prototype = {
   },
   
   update: function(id,task){
-    this.ajax_call('PUT', '/update/' + task.id, task);
+    this.ajax_call('PUT', '/' + task.id, task);
   },
   
   remove: function(id) {

@@ -59,13 +59,12 @@ class PomodoroTest < Test::Unit::TestCase
   
   def test_if_task_was_updated 
     task = Task.create(:name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5)
-    task.update(:name => 'Updated task', :number_of_pomodoros => 2, :number_of_interuptions => 3) 
-   
-    get '/update/' + task.id.to_s
+      
+    put '/' + task.id.to_s, :name => 'Updated name', :number_of_pomodoros => 2, :number_of_interuptions => 3
 
     assert last_response.ok?
     assert_match /id: #{task.id}/, last_response.body
-    assert_match /name: 'Updated task'/, last_response.body
+    assert_match /name: 'Updated name'/, last_response.body
     assert_match /number_of_pomodoros: 2/, last_response.body
     assert_match /number_of_interuptions: 3/, last_response.body 
   end

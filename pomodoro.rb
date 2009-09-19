@@ -28,13 +28,16 @@ get '/' do
 end
 
 get '/:id' do
-  @tasks = Array.new
-  @tasks.push( Task.get( params[:id ] ) ) 
-  erb :index
+  @task = Task.get( params[:id ] )  
+  erb :task
 end
 
-get '/update/:id' do
-  @tasks = Array.new
-  @tasks.push( Task.get( params[:id ] ) ) 
-  erb :index
+put '/:id' do
+  @task = Task.get( params[:id] )
+  
+  if @task
+    @task.update(:name => params[:name], :number_of_pomodoros => params[:number_of_pomodoros],  :number_of_interuptions => params[:number_of_interuptions])
+  end
+  
+  erb :task
 end
