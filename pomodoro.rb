@@ -23,7 +23,11 @@ get '/' do
 end
 
 post '/tasks' do
-  Task.create(params)
+  require 'ruby-debug'
+  debugger
+  
+  @task = Task.create(params)
+#  erb :task
 end
 
 get '/tasks' do
@@ -47,7 +51,7 @@ put '/tasks/:id' do
 end
 
 delete '/tasks/:id' do
-  Task.get( params[:id] ).destroy
+  Task.first( :offset => params['id'].to_i ).destroy
 end
 
 # Static files
@@ -60,4 +64,9 @@ end
 get '/js/pmdr.js' do
   headers 'Content-Type' => 'text/javascript; charset=utf-8'
   File.read(File.join(File.dirname(__FILE__), 'js', 'pmdr.js' ))
+end
+
+get '/js/jquery-1.3.2.js' do
+  headers 'Content-Type' => 'text/javascript; charset=utf-8'
+  File.read(File.join(File.dirname(__FILE__), 'js', 'jquery-1.3.2.js' ))
 end

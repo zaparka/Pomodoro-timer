@@ -19,9 +19,14 @@ class PomodoroTest < Test::Unit::TestCase
   def test_if_inserts_task_to_database
     pre_count = Task.count
     post '/tasks', :name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5
+    task = Task.last
     
     assert last_response.ok?
     assert_equal pre_count + 1, Task.count
+    assert_match /id: #{task.id}/, last_response.body
+    assert_match /name: 'Name of the task'/, last_response.body
+    assert_match /number_of_pomodoros: 1/, last_response.body
+    assert_match /number_of_interuptions: 5/, last_response.body
   end
   
   def test_if_inserts_right_data_for_task  
@@ -82,11 +87,10 @@ class PomodoroTest < Test::Unit::TestCase
     assert_equal 5, Task.last.number_of_interuptions
   end
   
-  def test_if_pomodoro_page_was_render_corectly 
-        
+  def test_if_pomodoro_page_was_render_corectly
     get '/'
 
-    assert last_response.ok?    
+    assert last_response.ok?
     doc = Nokogiri::HTML(last_response.body)
     assert_equal 'Pomodoro timer',doc.search("#header h1").inner_html
   end

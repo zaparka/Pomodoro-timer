@@ -4,127 +4,146 @@
 // used libraries: jquery.js
 
 
-function ServerStorage(){
+function ServerStorage(taskManager) {
+  this.taskManager = taskManager;
 }
 
 ServerStorage.prototype = {
   
   insert: function(task) {
-    this.ajax_call('POST', '/', task);
+    a = this;
+    this.ajax_call('POST', '/tasks', {
+      name: task.name,
+      number_of_pomodoros: task.number_of_pomodoros,
+      number_of_interuptions: task.number_of_interuptions
+    }, function() {
+      a.list();
+    });
   },
   
   update: function(id,task){
-    this.ajax_call('PUT', '/' + task.id, task);
+    this.ajax_call('PUT', '/tasks/' + task.id, task);
   },
   
   remove: function(id) {
-    this.ajax_call('DELETE', '/' + task.id, task); 
+    if (id < 0)
+      return;
+    a = this;
+    this.ajax_call('DELETE', '/tasks/' + id, null, 
+      function() {
+        a.list();
+      }); 
   },
   
   list: function() {
-    return this.ajax_call('GET', '/'); 
+    a = this;
+    this.ajax_call('GET', '/tasks', null, function(script) {
+      eval(script);
+      a.taskManager.updateHTMLSelect(tasks);
+    }); 
   },
   
   get: function(id) {
-    return this.ajax_call('GET', '/' + id); 
+    return this.ajax_call('GET', '/tasks/' + id); 
   },
   
-  ajax_call: function(type, url, data){
+  ajax_call: function(type, url, data, on_success_method){
     $.ajax({
      type: type,
      url: url,
      dataType: "script",
-     data: data
+     data: data,
+     success: on_success_method
     });
-  },
+  }
 
 };	 
 
-function ClientSideStorage() {
-  if (window.openDatabase){
-    this.storage = openDatabase("pomodoro_timer", "1.0", "HTML5 Database for PomodoroTimer", 200000);
-    if (!this.storage)
-      alert("Failed to open the database on disk.");
-  } else {
-    alert("Couldn't open the database.  Please try with a WebKit nightly with this feature enabled");
-  }
-  
-  this.init();
-  // this.storage.transaction(function(request) {
-  //   request.executeSql("DROP TABLE tasks", [], function(req, result) {}, 
-  //     function(error) {
-  //       alert(error.message);
-  //     } );
-  // });
-}
-
-ClientSideStorage.prototype = {
-  storage: null,
-  
-  init: function() {
-    this.storage.transaction(function(request) {
-      request.executeSql("SELECT COUNT(*) FROM tasks", [], function(result) {},
-      
-      function(request, error) {
-        request.executeSql("CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, number_of_pomodoros INT, number_of_interuptions INT)", [],
-          function(result, error) { 
-            //alert(error);
-          });
-      });
-    });
-  },
-  
-  insert: function(task) {
-    this.storage.transaction(function(request) {
-      request.executeSql("INSERT INTO tasks (name, number_of_pomodoros, number_of_interuptions) VALUES (?, ?, ?)", 
-       [task.name, task.number_of_pomodoros, task.number_of_interuptions], function(result) {}, 
-       function(request, error) {
-         alert(error.message);
-         return;
-       });
-    });
-  },
-  
-  update: function(id, task) {
-    this.storage.transaction(function(request) {
-      request.executeSql("UPDATE tasks SET name = ?, number_of_pomodoros = ?, number_of_interuptions = ? LIMIT 1 OFFSET ?", 
-        [task.name, task.number_of_pomodoros, task.number_of_interuptions]);
-    });
-  },
-  
-  list: function() {
-    var tasks = new Array();
-    var wait4result = true;
-    
-    this.storage.transaction(function(request) {
-      request.executeSql("SELECT * FROM tasks", [], function(req, result) {
-        for (var i = 0; i < result.rows.length; ++i) {
-          var row = result.rows.item(i);
-          var task = new Task();
-          task.id = row['id'];
-          task.name = row['name'];
-          task.number_of_pomodoros = row['number_of_pomodoros'];
-          task.number_of_interuptions = row['number_of_interuptions'];
-
-          tasks.push(task);
-        }
-
-        wait4result = false;
-      }, function(tx, error) {
-          wait4result = false;
-          alert('Failed to retrieve notes from database - ' + error.message);
-          return;
-        }
-      );
-      
-    });
-    
-    while (wait4result) {  };
-    
-    return tasks;
-  }
-  
-};
+// function ClientSideStorage() {
+//   if (window.openDatabase){
+//     this.storage = openDatabase("pomodoro_timer", "1.0", "HTML5 Database for PomodoroTimer", 200000);
+//     if (!this.storage)
+//       alert("Failed to open the database on disk.");
+//   } else {
+//     alert("Couldn't open the database.  Please try with a WebKit nightly with this feature enabled");
+//   }
+//   
+//   this.init();
+//   // this.storage.transaction(function(request) {
+//   //   request.executeSql("DROP TABLE tasks", [], function(req, result) {}, 
+//   //     function(error) {
+//   //       alert(error.message);
+//   //     } );
+//   // });
+// }
+// 
+// ClientSideStorage.prototype = {
+//   storage: null,
+//   
+//   init: function() {
+//     this.storage.transaction(function(request) {
+//       request.executeSql("SELECT COUNT(*) FROM tasks", [], function(result) {},
+//       
+//       function(request, error) {
+//         request.executeSql("CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, number_of_pomodoros INT, number_of_interuptions INT)", [],
+//           function(result, error) { 
+//             //alert(error);
+//           });
+//       });
+//     });
+//   },
+//   
+//   insert: function(task) {
+//     this.storage.transaction(function(request) {
+//       request.executeSql("INSERT INTO tasks (name, number_of_pomodoros, number_of_interuptions) VALUES (?, ?, ?)", 
+//        [task.name, task.number_of_pomodoros, task.number_of_interuptions], function(result) {}, 
+//        function(request, error) {
+//          alert(error.message);
+//          return;
+//        });
+//     });
+//   },
+//   
+//   update: function(id, task) {
+//     this.storage.transaction(function(request) {
+//       request.executeSql("UPDATE tasks SET name = ?, number_of_pomodoros = ?, number_of_interuptions = ? LIMIT 1 OFFSET ?", 
+//         [task.name, task.number_of_pomodoros, task.number_of_interuptions]);
+//     });
+//   },
+//   
+//   list: function() {
+//     var tasks = new Array();
+//     var wait4result = true;
+//     
+//     this.storage.transaction(function(request) {
+//       request.executeSql("SELECT * FROM tasks", [], function(req, result) {
+//         for (var i = 0; i < result.rows.length; ++i) {
+//           var row = result.rows.item(i);
+//           var task = new Task();
+//           task.id = row['id'];
+//           task.name = row['name'];
+//           task.number_of_pomodoros = row['number_of_pomodoros'];
+//           task.number_of_interuptions = row['number_of_interuptions'];
+// 
+//           tasks.push(task);
+//         }
+// 
+//         wait4result = false;
+//       }, function(tx, error) {
+//           wait4result = false;
+//           alert('Failed to retrieve notes from database - ' + error.message);
+//           return;
+//         }
+//       );
+//       
+//     });
+//     
+//     while (wait4result) {  };
+//     
+//     return tasks;
+//   }
+//   
+// };
 
 function MemoryStorage(){
  this.storage = new Array();
@@ -166,20 +185,17 @@ TaskManager.prototype = {
     if(name == '' || name == null ){
       name = prompt('Task name','Enter task nane');
     }  
-    this.tasks.insert(new Task(name));
-    this.updateHTMLSelect();
+    this.tasks.insert(new Task(0, name, 0, 0));
   },
   
   deleteTask: function(id) {
     this.tasks.remove(id);
-    this.updateHTMLSelect();
   },
   
   updateTask: function(id) {
     var task = this.tasks.get(id);
     task.name = prompt('Task name', task.name); 
     this.tasks.update(id, task);
-    this.updateHTMLSelect();
   },
   
   deleteSelectedTask: function(select) {
@@ -195,12 +211,16 @@ TaskManager.prototype = {
     }    
     this.updateTask(select[0].selectedIndex);
   },
+  
+  update: function() {
+    this.tasks.list();
+  },
 
   // private
-  updateHTMLSelect: function() {
+  updateHTMLSelect: function(list) {
     var selected_task = $("#task_list")[0].selectedIndex;
     $("#task_list").empty();     
-    jQuery.each(this.tasks.list(), function(i, task) {
+    jQuery.each(list, function(i, task) {
       $("#task_list").append('<option>'+task.to_s()+'</option>');
     });
     $("#task_list")[0].selectedIndex = selected_task;
@@ -208,11 +228,15 @@ TaskManager.prototype = {
 
 };
 
-function Task(name) {
+function Task(id, name, number_of_pomodoros, number_of_interuptions) {
+  this.id = id;
   this.name = name;
-};
+  this.number_of_pomodoros = number_of_pomodoros;
+  this.number_of_interuptions = number_of_interuptions;
+}
 
 Task.prototype = {
+  id: 0,
   name: '',
   number_of_pomodoros: 0,
   number_of_interuptions: 0,
@@ -352,9 +376,11 @@ TimeFormatter = {
 
   
 $(document).ready(function () {  
-  var taskManager = new TaskManager(new MemoryStorage());
+  var taskManager = new TaskManager();
+  taskManager.tasks = new ServerStorage(taskManager);
+  
   var pomodoroTimer = new PomodoroTimer(taskManager);
-  taskManager.updateHTMLSelect();
+  taskManager.update();
   $('#button_start').bind('click',function(){ pomodoroTimer.start(); });
   $('#button_interruption').bind('click',function(){ pomodoroTimer.interuption(); });
   $('#button_add').bind('click', function(){ taskManager.addTask(); });

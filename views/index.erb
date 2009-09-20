@@ -1,10 +1,3 @@
-var list = [
- <% @tasks.each do |task| %>
-  { 
-    id: <%= task.id %>,
-    name: '<%= task.name %>',
-    number_of_pomodoros: <%= task.number_of_pomodoros %>,
-    number_of_interuptions: <%= task.number_of_interuptions %>
-  },
- <% end %>
-]
+var tasks = [
+ <%= @tasks.map { |task| "new Task(#{task.id}, '#{task.name}', #{task.number_of_pomodoros}, #{task.number_of_interuptions})" }.join(', ') %>
+];
