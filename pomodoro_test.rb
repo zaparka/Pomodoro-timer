@@ -18,7 +18,7 @@ class PomodoroTest < Test::Unit::TestCase
 
   def test_if_inserts_task_to_database
     pre_count = Task.count
-    post '/tasks', :name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5
+    post '/tasks', :name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 1
     
     assert last_response.ok?
     assert_equal pre_count + 1, Task.count
