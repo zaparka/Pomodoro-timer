@@ -49,3 +49,15 @@ end
 delete '/tasks/:id' do
   Task.get( params[:id] ).destroy
 end
+
+# Static files
+
+get '/css/layout.css' do
+  headers 'Content-Type' => 'text/css; charset=utf-8'
+  File.read(File.join(File.dirname(__FILE__), 'css', 'layout.css' ))
+end
+
+get '/js/pmdr.js' do
+  headers 'Content-Type' => 'text/javascript; charset=utf-8'
+  File.read(File.join(File.dirname(__FILE__), 'js', 'pmdr.js' ))
+end
