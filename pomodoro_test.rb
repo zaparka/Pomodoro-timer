@@ -18,14 +18,14 @@ class PomodoroTest < Test::Unit::TestCase
 
   def test_if_inserts_task_to_database
     pre_count = Task.count
-    post '/', :name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5
+    post '/tasks', :name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5
     
     assert last_response.ok?
     assert_equal pre_count + 1, Task.count
   end
   
   def test_if_inserts_right_data_for_task  
-    post '/', :name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5
+    post '/tasks', :name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5
     
     assert last_response.ok?
     assert_equal 'Name of the task',Task.last.name
@@ -36,7 +36,7 @@ class PomodoroTest < Test::Unit::TestCase
   def test_if_gets_right_number_of_tasks  
     task = Task.create(:name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5)
     
-    get '/'
+    get '/tasks'
 
     assert last_response.ok?
     assert_match /id: #{task.id}/, last_response.body
@@ -48,7 +48,7 @@ class PomodoroTest < Test::Unit::TestCase
   def test_if_gets_right_task 
     task = Task.create(:name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5)
     
-    get '/' + task.id.to_s
+    get '/tasks/' + task.id.to_s
 
     assert last_response.ok?
     assert_match /id: #{task.id}/, last_response.body
@@ -60,7 +60,7 @@ class PomodoroTest < Test::Unit::TestCase
   def test_if_task_was_updated 
     task = Task.create(:name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5)
       
-    put '/' + task.id.to_s, :name => 'Updated name', :number_of_pomodoros => 2, :number_of_interuptions => 3
+    put '/tasks/' + task.id.to_s, :name => 'Updated name', :number_of_pomodoros => 2, :number_of_interuptions => 3
 
     assert last_response.ok?
     assert_match /id: #{task.id}/, last_response.body
@@ -73,7 +73,7 @@ class PomodoroTest < Test::Unit::TestCase
     Task.create(:name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5)
     task = Task.create( :name => 'Updated name', :number_of_pomodoros => 2, :number_of_interuptions => 3 )
       
-    delete '/' + task.id.to_s
+    delete '/tasks/' + task.id.to_s
 
     assert last_response.ok?
     assert_equal 1, Task.count

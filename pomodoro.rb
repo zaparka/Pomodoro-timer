@@ -18,30 +18,34 @@ DataMapper::setup(:default, {
   :host     => "localhost"
 })
 
-post '/' do
-  Task.create(params)   
+# get '/' do
+#   erb :pomodoro
+# end
+
+post '/tasks' do
+  Task.create(params)
 end
 
-get '/' do
+get '/tasks' do
   @tasks = Task.all
   erb :index
 end
 
-get '/:id' do
-  @task = Task.get( params[:id ] )  
+get '/tasks/:id' do
+  @task = Task.get( params[:id ] )
   erb :task
 end
 
-put '/:id' do
+put '/tasks/:id' do
   @task = Task.get( params[:id] )
-  
+
   if @task
     @task.update(:name => params[:name], :number_of_pomodoros => params[:number_of_pomodoros],  :number_of_interuptions => params[:number_of_interuptions])
   end
-  
+
   erb :task
 end
 
-delete '/:id' do
+delete '/tasks/:id' do
   Task.get( params[:id] ).destroy
 end
