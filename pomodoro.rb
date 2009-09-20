@@ -18,9 +18,9 @@ DataMapper::setup(:default, {
   :host     => "localhost"
 })
 
-# get '/' do
-#   erb :pomodoro
-# end
+get '/' do
+  erb :pomodoro
+end
 
 post '/tasks' do
   Task.create(params)

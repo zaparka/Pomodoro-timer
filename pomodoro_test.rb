@@ -82,4 +82,13 @@ class PomodoroTest < Test::Unit::TestCase
     assert_equal 5, Task.last.number_of_interuptions
   end
   
+  def test_if_pomodoro_page_was_render_corectly 
+        
+    get '/'
+
+    assert last_response.ok?    
+    doc = Nokogiri::HTML(last_response.body)
+    assert_equal 'Pomodoro timer',doc.search("#header h1").inner_html
+  end
+  
 end
