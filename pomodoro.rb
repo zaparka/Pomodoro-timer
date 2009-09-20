@@ -22,10 +22,7 @@ get '/' do
   erb :pomodoro
 end
 
-post '/tasks' do
-  require 'ruby-debug'
-  debugger
-  
+post '/tasks' do  
   @task = Task.create(params)
 #  erb :task
 end
@@ -36,7 +33,7 @@ get '/tasks' do
 end
 
 get '/tasks/:id' do
-  @task = Task.get( params[:id ] )
+  @task = Task.first( :offset => params['id'].to_i )
   erb :task
 end
 

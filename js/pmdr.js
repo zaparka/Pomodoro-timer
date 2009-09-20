@@ -21,8 +21,12 @@ ServerStorage.prototype = {
     });
   },
   
-  update: function(id,task){
-    this.ajax_call('PUT', '/tasks/' + task.id, task);
+  update: function(task){
+    a = this;
+    this.ajax_call('PUT', '/tasks/' + task.id, task,
+      function(){
+        a.list();
+      });
   },
   
   remove: function(id) {
@@ -43,8 +47,12 @@ ServerStorage.prototype = {
     }); 
   },
   
-  get: function(id) {
-    return this.ajax_call('GET', '/tasks/' + id); 
+  get: function(id,method) {
+    a = this;
+    this.ajax_call('GET', '/tasks/' + id,null,function(script){
+      eval(script);
+      method(task, a);
+    }); 
   },
   
   ajax_call: function(type, url, data, on_success_method){
@@ -193,9 +201,14 @@ TaskManager.prototype = {
   },
   
   updateTask: function(id) {
-    var task = this.tasks.get(id);
+    this.tasks.get(id,function(task,self){
+      self.taskManager.editTask(task);
+    });
+  },
+  
+  editTask: function(task) {
     task.name = prompt('Task name', task.name); 
-    this.tasks.update(id, task);
+    this.tasks.update(task);
   },
   
   deleteSelectedTask: function(select) {
@@ -276,20 +289,20 @@ PomodoroTimer.prototype = {
   stop: function(thisObj) {
     thisObj.state = 'stopped';
      $("#task_list").attr('disabled',false);
-     var selected_task = thisObj.selected_task();     
-     var task = thisObj.task_manager.tasks.get(selected_task);
-     task.number_of_pomodoros += 1;
-     thisObj.task_manager.tasks.update(selected_task,task);
-     thisObj.task_manager.updateHTMLSelect();
+     var selected_task = thisObj.selected_task();
+     var task = thisObj.task_manager.tasks.get(selected_task,function(task,self){
+       task.number_of_pomodoros += 1;
+       self.taskManager.tasks.update(task);
+     });
   },
   
   interuption: function () {
     if(this.state == 'running'){
-     var selected_task = this.selected_task();     
-     var task = this.task_manager.tasks.get(selected_task);
-     task.number_of_interuptions += 1;
-     this.task_manager.tasks.update(selected_task,task);
-     this.task_manager.updateHTMLSelect(); 
+     var selected_task = this.selected_task();
+     var task = this.task_manager.tasks.get(selected_task,function(task,self){
+       task.number_of_interuptions += 1;
+       self.taskManager.tasks.update(task);
+     });
     }
   },
   
