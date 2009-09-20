@@ -23,10 +23,6 @@ class PomodoroTest < Test::Unit::TestCase
     
     assert last_response.ok?
     assert_equal pre_count + 1, Task.count
-    assert_match /id: #{task.id}/, last_response.body
-    assert_match /name: 'Name of the task'/, last_response.body
-    assert_match /number_of_pomodoros: 1/, last_response.body
-    assert_match /number_of_interuptions: 5/, last_response.body
   end
   
   def test_if_inserts_right_data_for_task  
@@ -44,16 +40,13 @@ class PomodoroTest < Test::Unit::TestCase
     get '/tasks'
 
     assert last_response.ok?
-    assert_match /id: #{task.id}/, last_response.body
-    assert_match /name: 'Name of the task'/, last_response.body
-    assert_match /number_of_pomodoros: 1/, last_response.body
-    assert_match /number_of_interuptions: 5/, last_response.body 
+    assert_match /new Task\(#{task.id}, '#{task.name}', #{task.number_of_pomodoros}, #{task.number_of_interuptions}\)/, last_response.body
   end
   
   def test_if_gets_right_task 
     task = Task.create(:name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5)
     
-    get '/tasks/' + task.id.to_s
+    get '/tasks/' + 0.to_s
 
     assert last_response.ok?
     assert_match /id: #{task.id}/, last_response.body
@@ -65,7 +58,7 @@ class PomodoroTest < Test::Unit::TestCase
   def test_if_task_was_updated 
     task = Task.create(:name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5)
       
-    put '/tasks/' + task.id.to_s, :name => 'Updated name', :number_of_pomodoros => 2, :number_of_interuptions => 3
+    put '/tasks/' +  task.id.to_s, :name => 'Updated name', :number_of_pomodoros => 2, :number_of_interuptions => 3
 
     assert last_response.ok?
     assert_match /id: #{task.id}/, last_response.body
@@ -78,13 +71,13 @@ class PomodoroTest < Test::Unit::TestCase
     Task.create(:name => 'Name of the task', :number_of_pomodoros => 1, :number_of_interuptions => 5)
     task = Task.create( :name => 'Updated name', :number_of_pomodoros => 2, :number_of_interuptions => 3 )
       
-    delete '/tasks/' + task.id.to_s
+    delete '/tasks/' +  0.to_s
 
     assert last_response.ok?
     assert_equal 1, Task.count
-    assert_match 'Name of the task', Task.last.name
-    assert_equal 1, Task.last.number_of_pomodoros
-    assert_equal 5, Task.last.number_of_interuptions
+    assert_match 'Updated name', Task.last.name
+    assert_equal 2, Task.last.number_of_pomodoros
+    assert_equal 3, Task.last.number_of_interuptions
   end
   
   def test_if_pomodoro_page_was_render_corectly
