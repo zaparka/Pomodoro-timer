@@ -279,16 +279,21 @@ PomodoroTimer.prototype = {
   start: function() {
     if(this.selected_task() == -1){
       alert('You must select task');
-    } else {
+    } else if(this.state != 'running' ){
       $("#task_list").attr('disabled',true);
       this.state = 'running';
       this.timer.start(Times.sec * 10);
+      $('#button_start').val('stop');
+    } else {
+       this.timer.state = 'stopped';
+       this.stop(this);
     }
   },
 
   stop: function(thisObj) {
     thisObj.state = 'stopped';
      $("#task_list").attr('disabled',false);
+     $('#button_start').val('start');
      var selected_task = thisObj.selected_task();
      var task = thisObj.task_manager.tasks.get(selected_task,function(task,self){
        task.number_of_pomodoros += 1;
