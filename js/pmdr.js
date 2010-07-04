@@ -9,7 +9,7 @@ function ServerStorage(taskManager) {
 }
 
 ServerStorage.prototype = {
-  
+
   insert: function(task) {
     a = this;
     this.ajax_call('POST', '/tasks', {
@@ -20,7 +20,7 @@ ServerStorage.prototype = {
       a.list();
     });
   },
-  
+
   update: function(task){
     a = this;
     this.ajax_call('PUT', '/tasks/' + task.id, task,
@@ -28,33 +28,33 @@ ServerStorage.prototype = {
         a.list();
       });
   },
-  
+
   remove: function(id) {
     if (id < 0)
       return;
     a = this;
-    this.ajax_call('DELETE', '/tasks/' + id, null, 
+    this.ajax_call('DELETE', '/tasks/' + id, null,
       function() {
         a.list();
-      }); 
+      });
   },
-  
+
   list: function() {
     a = this;
     this.ajax_call('GET', '/tasks', null, function(script) {
       eval(script);
       a.taskManager.updateHTMLSelect(tasks);
-    }); 
+    });
   },
-  
+
   get: function(id,method) {
     a = this;
     this.ajax_call('GET', '/tasks/' + id,null,function(script){
       eval(script);
       method(task, a);
-    }); 
+    });
   },
-  
+
   ajax_call: function(type, url, data, on_success_method){
     $.ajax({
      type: type,
@@ -65,7 +65,7 @@ ServerStorage.prototype = {
     });
   }
 
-};	 
+};
 
 // function ClientSideStorage() {
 //   if (window.openDatabase){
@@ -159,27 +159,27 @@ function MemoryStorage(){
 
 MemoryStorage.prototype = {
   storage: null,
-  
+
   insert: function(task) {
     this.storage.push(task);
   },
-  
+
   update: function(id,task){
     this.storage[id] = task;
   },
-  
+
   remove: function(id) {
     this.storage.splice(id,1);
   },
-  
+
   list: function() {
     return this.storage;
   },
-  
+
   get: function(id) {
     return this.storage[id];
   }
-  
+
 };
 
 function TaskManager(storage) {
@@ -188,43 +188,43 @@ function TaskManager(storage) {
 
 TaskManager.prototype = {
   tasks: null,
-  
+
   addTask: function(name) {
     if(name == '' || name == null ){
       name = prompt('Task name','Enter task nane');
-    }  
+    }
     this.tasks.insert(new Task(0, name, 0, 0));
   },
-  
+
   deleteTask: function(id) {
     this.tasks.remove(id);
   },
-  
+
   updateTask: function(id) {
     this.tasks.get(id,function(task,self){
       self.taskManager.editTask(task);
     });
   },
-  
+
   editTask: function(task) {
-    task.name = prompt('Task name', task.name); 
+    task.name = prompt('Task name', task.name);
     this.tasks.update(task);
   },
-  
+
   deleteSelectedTask: function(select) {
     if (select[0].selectedIndex == undefined) {
       return;
-    }    
+    }
     this.deleteTask(select[0].selectedIndex);
   },
- 
+
   udpateSelectedTask: function(select) {
     if (select[0].selectedIndex == undefined) {
       return;
-    }    
+    }
     this.updateTask(select[0].selectedIndex);
   },
-  
+
   update: function() {
     this.tasks.list();
   },
@@ -253,7 +253,7 @@ Task.prototype = {
   name: '',
   number_of_pomodoros: 0,
   number_of_interuptions: 0,
-  
+
   to_s: function() {
     return this.name + ' (' + this.number_of_pomodoros + ') - ' + this.number_of_interuptions;
   }
@@ -300,7 +300,7 @@ PomodoroTimer.prototype = {
        self.taskManager.tasks.update(task);
      });
   },
-  
+
   interuption: function () {
     if(this.state == 'running'){
      var selected_task = this.selected_task();
@@ -310,9 +310,9 @@ PomodoroTimer.prototype = {
      });
     }
   },
-  
+
   selected_task: function() {
-   var selected_task = $("#task_list")[0].selectedIndex; 
+   var selected_task = $("#task_list")[0].selectedIndex;
    return selected_task;
   }
 
@@ -332,17 +332,17 @@ Timer.prototype = {
     this.setEndTime(end);
     this.update();
   },
-  
+
   display: function (){
    $('#timer_seconds').val( TimeFormatter.formatSecs(this.getTimeLeft()) );
    $('#timer_minutes').val( TimeFormatter.formatMins(this.getTimeLeft()) );
   },
-  
+
   update: function() {
     if (this.state != "running") {
       return;
     }
-    
+
     this.display();
     var totalSecs = parseInt(this.getTimeLeft() / Times.sec);
     if (totalSecs <= 0) {
@@ -374,7 +374,7 @@ Timer.prototype = {
   }
 };
 
-TimeFormatter = { 
+TimeFormatter = {
   formatSecs:function(time) {
     var time_s = parseInt(time / Times.sec % 60);
     if(time_s < 10) {
@@ -382,7 +382,7 @@ TimeFormatter = {
     }
     return time_s;
   },
-  
+
   formatMins:function(time) {
     var time_m = parseInt((time / Times.sec) / 60);	
     if(time_m <= 0){
@@ -392,11 +392,10 @@ TimeFormatter = {
   }
 };
 
-  
-$(document).ready(function () {  
+$(document).ready(function () { 
   var taskManager = new TaskManager();
   taskManager.tasks = new ServerStorage(taskManager);
-  
+
   var pomodoroTimer = new PomodoroTimer(taskManager);
   taskManager.update();
   $('#button_start').bind('click',function(){ pomodoroTimer.start(); });

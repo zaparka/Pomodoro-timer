@@ -1,28 +1,29 @@
+require "rubygems"
+require "bundler"
+Bundler.setup
+
 require 'rubygems'
 require 'sinatra'
 require 'haml'
 require 'erb'
-#require 'sass'
+
 require 'dm-core'
 require 'dm-validations'
 require 'dm-aggregates'
-#require 'dm-more'
+
 require 'fileutils'
 require 'task'
 
 DataMapper::setup(:default, {
-  :adapter  => "mysql",
-  :database => "pomodoro",
-  :username => "root",
-  :password => "",
-  :host     => "localhost"
+  :adapter  => "sqlite",
+  :database => "pomodoro"
 })
 
 get '/' do
   erb :pomodoro
 end
 
-post '/tasks' do  
+post '/tasks' do
   @task = Task.create(params)
 #  erb :task
 end
@@ -65,5 +66,5 @@ end
 
 get '/js/jquery-1.3.2.js' do
   headers 'Content-Type' => 'text/javascript; charset=utf-8'
-  File.read(File.join(File.dirname(__FILE__), 'js', 'jquery-1.3.2.js' ))
+  File.read(File.join(File.dirname(__FILE__), 'js', 'jquery.js' ))
 end
