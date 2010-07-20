@@ -90,8 +90,13 @@ MemoryStorage.prototype = {
     return this.storage;
   },
 
-  get: function(id) {
-    return this.storage[id];
+  get: function(id, method) {
+    task = this.storage[id];
+    if (method) {
+      method(task, self)
+    }
+
+    return task;
   }
 
 };
@@ -146,7 +151,7 @@ TaskManager.prototype = {
   // private
   updateHTMLSelect: function(list) {
     var selected_task = $("#task_list")[0].selectedIndex;
-    $("#task_list").empty();     
+    $("#task_list").empty();
     jQuery.each(list, function(i, task) {
       $("#task_list").append('<option>'+task.to_s()+'</option>');
     });
@@ -209,7 +214,7 @@ PomodoroTimer.prototype = {
      $("#task_list").attr('disabled',false);
      $('#button_start').val('start');
      var selected_task = thisObj.selected_task();
-     var task = thisObj.task_manager.tasks.get(selected_task,function(task,self){
+     var task = thisObj.task_manager.tasks.get(selected_task, function(task,self){
        task.number_of_pomodoros += 1;
        self.taskManager.tasks.update(task);
      });

@@ -30,13 +30,50 @@ describe('Timer', {
   },
 
   'is stopped after stop': function() {
-    $("#task_list")[0].selectedIndex = 0
     pomodoroTimer.start();
     pomodoroTimer.stop(pomodoroTimer);
     value_of(pomodoroTimer.state).should_be('stopped');
   }
 })
 
+describe('Task', {
+  before_each: function(){
+    var taskManager = new TaskManager();
+    taskManager.tasks = new MemoryStorage(taskManager);
+
+    pomodoroTimer = new PomodoroTimer(taskManager);
+
+    taskManager.addTask('Pomodoro name');
+    task = taskManager.tasks.get(0)
+  },
+
+  'has "Pomodoro name"': function() {
+    value_of(task.name).should_be('Pomodoro name');
+  },
+
+  'has 0 interruption as default': function() {
+    value_of(task.number_of_interuptions).should_be(0);
+  },
+
+  'has 1 interuption': function() {
+    $("#task_list")[0].selectedIndex = 0
+    pomodoroTimer.start();
+    pomodoroTimer.interuption()
+    value_of(task.number_of_interuptions).should_be(1);
+  },
+
+  'has 0 pomodoros as default': function() {
+    value_of(task.number_of_pomodoros).should_be(0);
+  },
+
+  'has 1 pomodoro': function() {
+    $("#task_list")[0].selectedIndex = 0
+    pomodoroTimer.start();
+    pomodoroTimer.stop(pomodoroTimer)
+    value_of(task.number_of_pomodoros).should_be(1);
+  }
+
+})
 // ]]></script>
 </head>
 <body>
