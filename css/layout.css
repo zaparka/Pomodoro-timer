@@ -73,4 +73,8 @@ span.buttons {
 #task_list {
  width: 100%;
 }
+
+.done {
+  text-decoration: line-through;
+}
 /*css end*/

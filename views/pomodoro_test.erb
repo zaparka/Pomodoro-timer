@@ -22,16 +22,23 @@ describe('Timer', {
   'is stopped as a default': function() {
     value_of(pomodoroTimer.state).should_be('stopped');
   },
-
+  
   'is running': function() {
     $("#task_list")[0].selectedIndex = 0
     pomodoroTimer.start();
     value_of(pomodoroTimer.state).should_be('running');
   },
-
+  
   'is stopped after stop': function() {
     pomodoroTimer.start();
     pomodoroTimer.stop(pomodoroTimer);
+    value_of(pomodoroTimer.state).should_be('stopped');
+  },
+  
+  'is stopped after done': function() {
+    $("#task_list")[0].selectedIndex = 0
+    pomodoroTimer.start();
+    pomodoroTimer.done();
     value_of(pomodoroTimer.state).should_be('stopped');
   }
 })
@@ -62,6 +69,15 @@ describe('Task', {
     value_of(task.number_of_interuptions).should_be(1);
   },
 
+  'has 3 interuption': function() {
+    $("#task_list")[0].selectedIndex = 0
+    pomodoroTimer.start();
+    pomodoroTimer.interuption()
+    pomodoroTimer.interuption()
+    pomodoroTimer.interuption()
+    value_of(task.number_of_interuptions).should_be(3);
+  },
+
   'has 0 pomodoros as default': function() {
     value_of(task.number_of_pomodoros).should_be(0);
   },
@@ -71,6 +87,29 @@ describe('Task', {
     pomodoroTimer.start();
     pomodoroTimer.stop(pomodoroTimer)
     value_of(task.number_of_pomodoros).should_be(1);
+    pomodoroTimer.start();
+    pomodoroTimer.stop(pomodoroTimer)
+    value_of(task.number_of_pomodoros).should_be(2);
+  },
+
+  'has 1 pomodoro after done': function() {
+    $("#task_list")[0].selectedIndex = 0
+    pomodoroTimer.start();
+    pomodoroTimer.done();
+    value_of(task.number_of_pomodoros).should_be(1);
+  },
+
+  'has waiting status as default': function() {
+    $("#task_list")[0].selectedIndex = 0
+    pomodoroTimer.start();
+    value_of(task.status).should_be('waiting');
+  },
+
+  'has done status': function() {
+    $("#task_list")[0].selectedIndex = 0
+    pomodoroTimer.start();
+    pomodoroTimer.done();
+    value_of(task.status).should_be('done');
   }
 
 })

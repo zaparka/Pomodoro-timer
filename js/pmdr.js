@@ -15,7 +15,8 @@ ServerStorage.prototype = {
     this.ajax_call('POST', '/tasks', {
       name: task.name,
       number_of_pomodoros: task.number_of_pomodoros,
-      number_of_interuptions: task.number_of_interuptions
+      number_of_interuptions: task.number_of_interuptions,
+      status: task.status
     }, function() {
       a.list();
     });
@@ -112,7 +113,7 @@ TaskManager.prototype = {
     if(name == '' || name == null ){
       name = prompt('Task name','Enter task nane');
     }
-    this.tasks.insert(new Task(0, name, 0, 0));
+    this.tasks.insert(new Task(0, name, 0, 0, 'waiting'));
   },
 
   deleteTask: function(id) {
@@ -153,18 +154,20 @@ TaskManager.prototype = {
     var selected_task = $("#task_list")[0].selectedIndex;
     $("#task_list").empty();
     jQuery.each(list, function(i, task) {
-      $("#task_list").append('<option>'+task.to_s()+'</option>');
+      class = (task.status == 'done')? 'class="done"' : '';
+      $("#task_list").append('<option '+ class +'>'+task.to_s()+'</option>');
     });
     $("#task_list")[0].selectedIndex = selected_task;
   }
 
 };
 
-function Task(id, name, number_of_pomodoros, number_of_interuptions) {
+function Task(id, name, number_of_pomodoros, number_of_interuptions, status) {
   this.id = id;
   this.name = name;
   this.number_of_pomodoros = number_of_pomodoros;
   this.number_of_interuptions = number_of_interuptions;
+  this.status = status;
 }
 
 Task.prototype = {
@@ -172,6 +175,7 @@ Task.prototype = {
   name: '',
   number_of_pomodoros: 0,
   number_of_interuptions: 0,
+  status: '',
 
   to_s: function() {
     return this.name + ' (' + this.number_of_pomodoros + ') - ' + this.number_of_interuptions;
@@ -214,7 +218,7 @@ PomodoroTimer.prototype = {
      $("#task_list").attr('disabled',false);
      $('#button_start').val('start');
      var selected_task = thisObj.selected_task();
-     var task = thisObj.task_manager.tasks.get(selected_task, function(task,self){
+     var task = thisObj.task_manager.tasks.get(selected_task, function(task, self){
        task.number_of_pomodoros += 1;
        self.taskManager.tasks.update(task);
      });
@@ -223,16 +227,26 @@ PomodoroTimer.prototype = {
   interuption: function () {
     if(this.state == 'running'){
      var selected_task = this.selected_task();
-     var task = this.task_manager.tasks.get(selected_task,function(task,self){
+     var task = this.task_manager.tasks.get(selected_task,function(task, self){
        task.number_of_interuptions += 1;
        self.taskManager.tasks.update(task);
      });
     }
   },
 
+  done: function () {
+    this.state = 'stopped';
+    var selected_task = this.selected_task();
+    var task = this.task_manager.tasks.get(selected_task,function(task, self){
+      task.number_of_pomodoros += 1;
+      task.status = 'done';
+      self.taskManager.tasks.update(task);
+    });
+  },
+
   selected_task: function() {
-   var selected_task = $("#task_list")[0].selectedIndex;
-   return selected_task;
+    var selected_task = $("#task_list")[0].selectedIndex;
+    return selected_task;
   }
 
 };
@@ -317,8 +331,10 @@ $(document).ready(function () {
 
   var pomodoroTimer = new PomodoroTimer(taskManager);
   taskManager.update();
-  $('#button_start').bind('click',function(){ pomodoroTimer.start(); });
+  $('#button_start').bind('click', function(){ pomodoroTimer.start(); });
   $('#button_interruption').bind('click',function(){ pomodoroTimer.interuption(); });
+  $('#button_done').bind('click',function(){ pomodoroTimer.done(); });
+
   $('#button_add').bind('click', function(){ taskManager.addTask(); });
   $('#button_delete').bind('click',function() { taskManager.deleteSelectedTask($('#task_list')); });
   $('#button_edit').bind('click',function() { taskManager.udpateSelectedTask($('#task_list')); });

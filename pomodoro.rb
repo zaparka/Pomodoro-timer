@@ -25,7 +25,6 @@ end
 
 post '/tasks' do
   @task = Task.create(params)
-#  erb :task
 end
 
 get '/tasks' do
@@ -40,9 +39,13 @@ end
 
 put '/tasks/:id' do
   @task = Task.get( params[:id] )
+  params[:status] = '' if params[:status].blank?
 
   if @task
-    @task.update(:name => params[:name], :number_of_pomodoros => params[:number_of_pomodoros],  :number_of_interuptions => params[:number_of_interuptions])
+    @task.update(:name => params[:name],
+                 :number_of_pomodoros => params[:number_of_pomodoros],
+                 :number_of_interuptions => params[:number_of_interuptions],
+                 :status => params[:status])
   end
 
   erb :task

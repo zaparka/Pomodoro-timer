@@ -1,3 +1,3 @@
 var tasks = [
- <%= @tasks.map { |task| "new Task(#{task.id}, '#{task.name}', #{task.number_of_pomodoros}, #{task.number_of_interuptions})" }.join(', ') %>
+ <%= @tasks.map { |task| "new Task(#{task.id}, '#{task.name}', #{task.number_of_pomodoros}, #{task.number_of_interuptions}, '#{task.status}')" }.join(', ') %>
 ];
