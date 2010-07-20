@@ -48,6 +48,10 @@ put '/tasks/:id' do
   erb :task
 end
 
+get '/test' do
+  erb :'pomodoro_test'
+end
+
 delete '/tasks/:id' do
   Task.first( :offset => params['id'].to_i ).destroy
 end
@@ -64,7 +68,23 @@ get '/js/pmdr.js' do
   File.read(File.join(File.dirname(__FILE__), 'js', 'pmdr.js' ))
 end
 
-get '/js/jquery-1.3.2.js' do
+get '/js/jquery.js' do
   headers 'Content-Type' => 'text/javascript; charset=utf-8'
   File.read(File.join(File.dirname(__FILE__), 'js', 'jquery.js' ))
+end
+
+#test
+get '/css/JSSpec.css' do
+  headers 'Content-Type' => 'text/css; charset=utf-8'
+  File.read(File.join(File.dirname(__FILE__), 'css', 'JSSpec.css' ))
+end
+
+get '/js/JSSpec.js' do
+  headers 'Content-Type' => 'text/javascript; charset=utf-8'
+  File.read(File.join(File.dirname(__FILE__), 'js', 'JSSpec.js' ))
+end
+
+get '/js/diff_match_patch.js' do
+  headers 'Content-Type' => 'text/javascript; charset=utf-8'
+  File.read(File.join(File.dirname(__FILE__), 'js', 'diff_match_patch.js' ))
 end

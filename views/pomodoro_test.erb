@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<title>Pomodoro test - jsspec</title>
+<link rel="stylesheet" type="text/css" href="../css/JSSpec.css" />
+<script type="text/javascript" src="/js/diff_match_patch.js"></script>
+<script type="text/javascript" src="/js/JSSpec.js"></script>
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/pmdr.js"></script>
+
+<script type="text/javascript">// <![CDATA[
+
+describe('Timer', {
+  before_all: function(){
+    taskManager = new TaskManager();
+    taskManager.tasks = new MemoryStorage(taskManager);
+    taskManager.addTask('test');
+    pomodoroTimer = new PomodoroTimer(taskManager);
+  },
+
+  'is stopped as a default': function() {
+    value_of(pomodoroTimer.state).should_be('stopped');
+  },
+
+  'is running': function() {
+    $("#task_list")[0].selectedIndex = 0
+    pomodoroTimer.start();
+    value_of(pomodoroTimer.state).should_be('running');
+  },
+
+  'is stopped after stop': function() {
+    $("#task_list")[0].selectedIndex = 0
+    pomodoroTimer.start();
+    pomodoroTimer.stop(pomodoroTimer);
+    value_of(pomodoroTimer.state).should_be('stopped');
+  }
+})
+
+// ]]></script>
+</head>
+<body>
+ <div id="timer_tasks" style="display:none;">
+    <select size="5" id="task_list" name="task_list">
+    </select>
+  </div>
+</body>
+</html>
