@@ -215,13 +215,15 @@ PomodoroTimer.prototype = {
 
   stop: function(thisObj) {
     thisObj.state = 'stopped';
-     $("#task_list").attr('disabled',false);
-     $('#button_start').val('start');
-     var selected_task = thisObj.selected_task();
-     var task = thisObj.task_manager.tasks.get(selected_task, function(task, self){
-       task.number_of_pomodoros += 1;
-       self.taskManager.tasks.update(task);
-     });
+    thisObj.timer.reset_display()
+
+    $("#task_list").attr('disabled',false);
+    $('#button_start').val('start');
+    var selected_task = thisObj.selected_task();
+    var task = thisObj.task_manager.tasks.get(selected_task, function(task, self){
+      task.number_of_pomodoros += 1;
+      self.taskManager.tasks.update(task);
+    });
   },
 
   interuption: function () {
@@ -235,13 +237,21 @@ PomodoroTimer.prototype = {
   },
 
   done: function () {
-    this.state = 'stopped';
     var selected_task = this.selected_task();
-    var task = this.task_manager.tasks.get(selected_task,function(task, self){
-      task.number_of_pomodoros += 1;
-      task.status = 'done';
-      self.taskManager.tasks.update(task);
-    });
+    if (this.state != 'stopped')
+      var task = this.task_manager.tasks.get(selected_task,function(task, self){
+        task.number_of_pomodoros += 1;
+        task.status = 'done';
+        self.taskManager.tasks.update(task);
+      });
+    else
+      var task = this.task_manager.tasks.get(selected_task,function(task, self){
+        task.status = 'done';
+        self.taskManager.tasks.update(task);
+      });
+    this.timer.state = 'stopped';
+    this.timer.reset_display()
+    this.state = 'stopped';
   },
 
   selected_task: function() {
@@ -267,8 +277,13 @@ Timer.prototype = {
   },
 
   display: function (){
-   $('#timer_seconds').val( TimeFormatter.formatSecs(this.getTimeLeft()) );
-   $('#timer_minutes').val( TimeFormatter.formatMins(this.getTimeLeft()) );
+    $('#timer_seconds').val( TimeFormatter.formatSecs(this.getTimeLeft()) );
+    $('#timer_minutes').val( TimeFormatter.formatMins(this.getTimeLeft()) );
+  },
+
+  reset_display: function (){
+    $('#timer_seconds').val('00');
+    $('#timer_minutes').val('00');
   },
 
   update: function() {

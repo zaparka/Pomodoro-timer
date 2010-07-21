@@ -22,25 +22,33 @@ describe('Timer', {
   'is stopped as a default': function() {
     value_of(pomodoroTimer.state).should_be('stopped');
   },
-  
+
   'is running': function() {
     $("#task_list")[0].selectedIndex = 0
     pomodoroTimer.start();
-    value_of(pomodoroTimer.state).should_be('running');
+    value_of(pomodoroTimer.timer.state).should_be('running');
   },
-  
+
   'is stopped after stop': function() {
     pomodoroTimer.start();
     pomodoroTimer.stop(pomodoroTimer);
-    value_of(pomodoroTimer.state).should_be('stopped');
+    value_of(pomodoroTimer.timer.state).should_be('stopped');
   },
-  
+
   'is stopped after done': function() {
     $("#task_list")[0].selectedIndex = 0
     pomodoroTimer.start();
     pomodoroTimer.done();
     value_of(pomodoroTimer.state).should_be('stopped');
+  },
+
+  'timer is set to 0 after done': function() {
+    $("#task_list")[0].selectedIndex = 0
+    pomodoroTimer.start();
+    pomodoroTimer.done();
+    value_of(pomodoroTimer.timer.state).should_be('stopped');
   }
+  
 })
 
 describe('Task', {
@@ -92,11 +100,17 @@ describe('Task', {
     value_of(task.number_of_pomodoros).should_be(2);
   },
 
-  'has 1 pomodoro after done': function() {
+  'increase 1 pomodoro after done': function() {
     $("#task_list")[0].selectedIndex = 0
     pomodoroTimer.start();
     pomodoroTimer.done();
     value_of(task.number_of_pomodoros).should_be(1);
+  },
+
+  'doesn\'t increase 1 pomodoro after done if it is stopped': function() {
+    $("#task_list")[0].selectedIndex = 0
+    pomodoroTimer.done();
+    value_of(task.number_of_pomodoros).should_be(0);
   },
 
   'has waiting status as default': function() {
