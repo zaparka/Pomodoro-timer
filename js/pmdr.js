@@ -154,8 +154,8 @@ TaskManager.prototype = {
     var selected_task = $("#task_list")[0].selectedIndex;
     $("#task_list").empty();
     jQuery.each(list, function(i, task) {
-      class = (task.status == 'done')? 'class="done"' : '';
-      $("#task_list").append('<option '+ class +'>'+task.to_s()+'</option>');
+      cssclass = (task.status == 'done')? 'class="done"' : '';
+      $("#task_list").append('<option '+ cssclass +'>'+task.to_s()+'</option>');
     });
     $("#task_list")[0].selectedIndex = selected_task;
   }
@@ -252,7 +252,7 @@ PomodoroTimer.prototype = {
 };
 
 function Timer(callback, obj) {
-  this.callback = callback; 
+  this.callback = callback;
   this.obj = obj;
 };
 

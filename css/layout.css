@@ -2,7 +2,7 @@
 * {
  margin: 0;
  padding: 0;
- 
+
 }
 body {
  color: #666;
@@ -30,14 +30,14 @@ h1 {
  -moz-border-radius: 10px;
  -webkit-border-radius: 10px;
 
- padding: 5px 5px 5px 15px; 
+ padding: 5px 5px 5px 15px;
  position: relative;
 }
 
 #timer_minutes, #timer_seconds {
  width: 90px;
  height: 70px;
- font-size: 68px;  
+ font-size: 68px;
  text-align: center;
 }
 
@@ -46,10 +46,10 @@ h1 {
 }
 
 #timer_top span.colon {
- font-size: 68px; 
+ font-size: 68px;
  line-height: 60px;
 }
-          
+
 #timer_top h4 {
  padding-left: 40px;
 }
@@ -57,11 +57,11 @@ h1 {
 span.buttons {
  display: block;
  text-align:right;
- 
-}  
+}
+
 #timer_top span.buttons {
   padding-right:52px;
-}  
+} 
 
 #button_start,#button_interruption {
 }
@@ -75,6 +75,7 @@ span.buttons {
 }
 
 .done {
+  color: #aaa;
   text-decoration: line-through;
 }
 /*css end*/
